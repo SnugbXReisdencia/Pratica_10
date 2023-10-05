@@ -3,31 +3,35 @@
 #include <cstring>
 #include <vector>
 #include <algorithm>
+#include <iomanip>
 
 using namespace std;
 
 void pause();
 void pause2();
 void limpaTela();
-int menu();
-int menuAlterarAluno();
 
-// ...
+int menu();
+int menuAlterarAluno(string);
+
+void bubbleSort(vector<string>& nomes, vector<float>& notas1, vector<float>& notas2);
 
 int main()
 {
     limpaTela();
 
-    int N, opcao;
+    int N, opcao, opcao2, aux;
     string nomeParaExcluir, nome;
     float nota1, nota2;
-
+    
     cout << "Digite o limite de alunos (N): ";
     cin >> N;
 
     vector<string> nomes;
     vector<float> notas1;
     vector<float> notas2;
+
+    auto it = nomes.end();
 
     char sn;
 
@@ -61,6 +65,11 @@ int main()
                 notas1.push_back(nota1);
                 notas2.push_back(nota2);
 
+                if(nomes.size() > 1)
+                {
+                    bubbleSort(nomes, notas1, notas2);
+                }
+
                 cout << "Deseja incluir mais alunos (s/n)? ";
                 cin >> sn;
             } while (sn == 's' || sn == 'S');
@@ -78,33 +87,12 @@ int main()
                 }
             }
             break;
-        case 3:
-            cout << "\nAlunos ordenados por nome:" << endl;
-            for (size_t i = 0; i < nomes.size(); i++)
-            {
-                if (i < notas1.size() && i < notas2.size())
-                { // Verifique se o índice está dentro dos limites
-                    cout << "Nome: " << nomes[i] << "\nNota 1: " << fixed << notas1[i] << "\nNota 2: " << notas2[i] << endl;
-                }
-                else
-                {
-                    cout << "Erro: Índice do aluno fora dos limites." << endl;
-                }
-            }
-            pause();
-            break;
-        case 0:
-            break;
-        default:
-            cout << "Opção invalida." << endl;
-            pause();
-            break;
         case 2:
             cout << "Digite o nome do aluno que deseja excluir: ";
             cin.ignore();
             getline(cin, nomeParaExcluir);
             
-            auto it = find(nomes.begin(), nomes.end(), nomeParaExcluir);
+            it = find(nomes.begin(), nomes.end(), nomeParaExcluir);
 
             if (it != nomes.end())
             {
@@ -128,10 +116,95 @@ int main()
             }
             pause2();            
             break;
+        case 3:
+            limpaTela();
+            cout << "\n######### Lista de Alunos #########" << endl;
+            for (size_t i = 0; i < nomes.size(); i++)
+            {
+                if (i < notas1.size() && i < notas2.size())
+                { 
+                    cout << "Aluno " << i + 1 << "ª: " << endl;
+                    cout << "Nome: " << nomes[i] << "\nNota 1: " << fixed << setprecision(1) << notas1[i] << "\nNota 2: " << notas2[i] << endl;
+                    cout << "Media: " << (notas1[i] + notas2[i]) / 2 << endl;
+                    (notas1[i] + notas2[i]) / 2 >= 7 ? cout << "Aluno aprovado." << endl : cout << "Aluno reprovado." << endl;
+                    cout << "------------------------------------------------" << endl;
+                }
+                else
+                {
+                    cout << "Erro: Índice do aluno fora dos limites." << endl;
+                }
+            }
+            pause();
+            break;
+        case 4:
+            limpaTela();
+            cout << "Digite o nome do aluno que deseja alterar: ";
+            cin.ignore();
+            getline(cin, nome);
+
+            it = find(nomes.begin(), nomes.end(), nome);
+
+            if(it != nomes.end())
+            {
+                aux = distance(nomes.begin(), it);
+            }else{
+                cout << "Aluno não encontrado." << endl;
+                pause();
+                break;
+            }
+            opcao2 = menuAlterarAluno(nomes[aux]);
+            switch (opcao2){
+            case 1:
+                cout << "Digite a nova nota 1: ";
+                cin >> nota1;
+                notas1[aux] = nota1;
+                cout << "Nota 1 alterada com sucesso !!" << endl;
+                pause();
+                break;
+            case 2:
+                cout << "Digite a nova nota 2: ";
+                cin >> nota2;
+                notas2[aux] = nota2;
+                cout << "Nota 2 alterada com sucesso !!" << endl;
+                pause();
+                break;
+            case 0:
+                break;
+            default:
+                cout << "Opção invalida." << endl;
+                pause();
+                break;
+            }
+        case 0:
+            break;
+        default:
+            cout << "Opção invalida." << endl;
+            pause();
+            break;
         }
     } while (opcao != 0);
     return 0;
 }
+
+void bubbleSort(vector<string>& nomes, vector<float>& notas1, vector<float>& notas2) {
+    size_t n = nomes.size();
+
+    bool trocou;
+    do {
+        trocou = false;
+        for (size_t j = 0; j < n - 1; j++) {
+            if (nomes[j] > nomes[j + 1]) {
+                // Troque os elementos nos vetores nomes, notas1 e notas2
+                swap(nomes[j], nomes[j + 1]);
+                swap(notas1[j], notas1[j + 1]);
+                swap(notas2[j], notas2[j + 1]);
+                trocou = true;
+            }
+        }
+        n--;
+    } while (trocou);
+}
+
 
 int menu()
 {
@@ -147,10 +220,10 @@ int menu()
     return opcao;
 }
 
-int menuAlterarAluno()
+int menuAlterarAluno(string nome)
 {
     int opcao;
-    cout << "############## Menu de Alterar Dados do Aluno ##############\n\n";
+    cout << "############## Alterar Dados do " << nome << " ##############\n\n";
     cout << "1 - Nota 1\n";
     cout << "2 - Nota 2\n";
     cout << "0 - Voltar Menu Aluno\n";
@@ -158,7 +231,6 @@ int menuAlterarAluno()
     cin >> opcao;
     return opcao;
 }
-
 
 void pause()
 {
