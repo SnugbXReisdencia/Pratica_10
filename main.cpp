@@ -10,6 +10,7 @@ void pause();
 void pause2();
 void limpaTela();
 int menu();
+int menuAlterarAluno();
 
 // ...
 
@@ -39,7 +40,7 @@ int main()
         case 1:
             do
             {
-                if (nomes.size() >= N)
+                if (int(nomes.size()) >= N)
                 {
                     cout << "Limite de alunos atingido. Não é possível adicionar mais alunos." << endl;
                     pause();
@@ -83,7 +84,7 @@ int main()
             {
                 if (i < notas1.size() && i < notas2.size())
                 { // Verifique se o índice está dentro dos limites
-                    cout << "Nome: " << nomes[i] << ", Nota 1: " << notas1[i] << ", Nota 2: " << notas2[i] << endl;
+                    cout << "Nome: " << nomes[i] << "\nNota 1: " << fixed << notas1[i] << "\nNota 2: " << notas2[i] << endl;
                 }
                 else
                 {
@@ -139,11 +140,25 @@ int menu()
     cout << "1 - Incluir\n";
     cout << "2 - Excluir\n";
     cout << "3 - Listar\n";
+    cout << "4 - Alterar\n";
     cout << "0 - Sair\n";
     cout << "\nEscolha uma opcao: ";
     cin >> opcao;
     return opcao;
 }
+
+int menuAlterarAluno()
+{
+    int opcao;
+    cout << "############## Menu de Alterar Dados do Aluno ##############\n\n";
+    cout << "1 - Nota 1\n";
+    cout << "2 - Nota 2\n";
+    cout << "0 - Voltar Menu Aluno\n";
+    cout << "\nEscolha uma opcao: ";
+    cin >> opcao;
+    return opcao;
+}
+
 
 void pause()
 {
